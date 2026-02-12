@@ -37,7 +37,7 @@ public class BankContext : DbContext
         // Also add an account for that customer with 100,000SEK.
         var adminCustomer = new Customer
         {
-            Id = 123,
+            Id = 1,
             FullName = "admin",
             Username = "admin",
             Password = "admin"
