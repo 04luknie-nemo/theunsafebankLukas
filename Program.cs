@@ -3,25 +3,21 @@ using theunsafebank.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure SQLite database
 builder.Services.AddDbContext<BankContext>(options =>
     options.UseSqlite("Data Source=bank.db"));
 
 // Add session support (insecure - no encryption, just basic storage)
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddDistributedMemoryCache(); // In-memory cache for sessions
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = false; // INSECURE!
     options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
 
-// Initialize database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BankContext>();
@@ -29,12 +25,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-}
+// if (!app.Environment.IsDevelopment())
+// {
+//     app.UseExceptionHandler("/Home/Error");
+// }
 
-// NO HTTPS REDIRECTION - INSECURE!
+// INSECURE!
 // app.UseHttpsRedirection();
 
 app.UseRouting();
