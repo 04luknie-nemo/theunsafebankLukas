@@ -38,12 +38,12 @@ public class BankContext : DbContext
         var adminCustomer = new Customer
         {
             Id = 1,
-            FullName = "admin",
+            FullName = "Admin",
             Username = "admin",
-            Password = "password"
+            Password = "admin" // FIXME: Plain text password! Use Bcrypt to hash passwords in a real application
         };
 
-        var adminAccount = new Account
+        var theBanksAccount = new Account
         {
             Id = 1,
             AccountNumber = "1001",
@@ -51,7 +51,43 @@ public class BankContext : DbContext
             CustomerId = adminCustomer.Id
         };
 
+        var firstCustomer = new Customer
+        {
+            Id = 2,
+            FullName = "gustav",
+            Username = "gus",
+            Password = "gus"
+        };
+
+        var firstCustomerAccount = new Account
+        {
+            Id = 2,
+            AccountNumber = "1002",
+            Balance = 10000m,
+            CustomerId = firstCustomer.Id
+        };
+
+        var secondCustomer = new Customer
+        {
+            Id = 3,
+            FullName = "kråkan",
+            Username = "kråkan",
+            Password = "kråkan"
+        };
+
+        var secondCustomerAccount = new Account
+        {
+            Id = 3,
+            AccountNumber = "1003",
+            Balance = 10000m,
+            CustomerId = secondCustomer.Id
+        };
+
         modelBuilder.Entity<Customer>().HasData(adminCustomer);
-        modelBuilder.Entity<Account>().HasData(adminAccount);
+        modelBuilder.Entity<Account>().HasData(theBanksAccount);
+        modelBuilder.Entity<Customer>().HasData(firstCustomer);
+        modelBuilder.Entity<Account>().HasData(firstCustomerAccount);
+        modelBuilder.Entity<Customer>().HasData(secondCustomer);
+        modelBuilder.Entity<Account>().HasData(secondCustomerAccount);
     }
 }
