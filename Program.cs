@@ -33,6 +33,8 @@ using (var scope = app.Services.CreateScope())
 // INSECURE!
 // app.UseHttpsRedirection();
 
+app.UsePathBase("/bank"); //Eftersom siten servas under suvnet.se/bank
+
 app.UseRouting();
 // app.UseSession(); // FIXME: Session is not properly configured, and not used in controllers
 app.UseAuthorization();
