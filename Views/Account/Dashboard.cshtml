@@ -139,7 +139,7 @@ else
             return;
         }
 
-        fetch('/Account/LookupAccount?accountNumber=' + encodeURIComponent(accountNumber))
+        fetch('@Url.Action("LookupAccount", "Account")?accountNumber=' + encodeURIComponent(accountNumber))
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 if (data.success) {
