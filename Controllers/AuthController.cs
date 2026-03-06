@@ -52,12 +52,17 @@ public class AuthController : Controller
             ViewBag.Error = "Username already exists";
             return View();
         }
+        string numFirstHalf = "dK-JoNaS";
+        string numSecHalf = Random.Shared.Next(900000000, 1000000000).ToString();
+
+        string customerNumber = numFirstHalf + numSecHalf;
 
         var customer = new Customer
         {
             Username = username,
             Password = password,
             FullName = fullName
+            CustomerNumber = customerNumber
         };
 
         _context.Customers.Add(customer);
