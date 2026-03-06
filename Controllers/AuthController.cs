@@ -61,7 +61,7 @@ public class AuthController : Controller
         {
             Username = username,
             Password = password,
-            FullName = fullName
+            FullName = fullName,
             CustomerNumber = customerNumber
         };
 
