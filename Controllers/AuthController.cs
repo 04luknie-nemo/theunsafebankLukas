@@ -66,6 +66,9 @@ public class AuthController : Controller
 			CustomerNumber = customerNumber
 		};
 
+		_context.Customers.Add(customer);
+		_context.SaveChanges();
+
 		string identifier = "dK-JoNaS-";
 		string rndNumber = Random.Shared.Next(900000000, 1000000000).ToString();
 		string accountNumber = identifier + rndNumber;
