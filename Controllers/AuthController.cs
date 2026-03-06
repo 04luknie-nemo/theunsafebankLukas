@@ -28,7 +28,7 @@ public class AuthController : Controller
 
 		if (customer != null)
 		{
-			// Response.Cookies.Append("CustomerId", customer.Id.ToString());
+			Response.Cookies.Append("CustomerId", customer.Id.ToString());
 			return RedirectToAction("Dashboard", "Account");
 		}
 
@@ -52,10 +52,11 @@ public class AuthController : Controller
 			ViewBag.Error = "Username already exists";
 			return View();
 		}
-		string numFirstHalf = "dK-JoNaS";
-		string numSecHalf = Random.Shared.Next(900000000, 1000000000).ToString();
 
-		string customerNumber = numFirstHalf + numSecHalf;
+		var guid = Guid.NewGuid().ToString();
+		var partialGuid = guid.ToString().Substring(guid.Length - 12);
+
+		string customerNumber = "mac-jonas-" + partialGuid;
 
 		var customer = new Customer
 		{
@@ -85,7 +86,7 @@ public class AuthController : Controller
 		_context.Accounts.Add(account);
 		_context.SaveChanges();
 
-		Response.Cookies.Append("dkJoNaS", customer.CustomerNumber.ToString());
+		Response.Cookies.Append("CustomerId", customer.Id.ToString());
 		return RedirectToAction("Dashboard", "Account");
 	}
 
