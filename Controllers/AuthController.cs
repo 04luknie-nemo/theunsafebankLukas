@@ -102,16 +102,13 @@ public class AuthController : Controller
     private string? CheckDuplicateAccNumber()
     {
         string identifier = "dK-JoNaS-";
-        string rndNumber;
-        string accountNum;
         int maxAttempts = 25;
         int attempts = 0;
 
         while (attempts <= maxAttempts)
         {
-            rndNumber = Random.Shared.Next(900000000, 1000000000).ToString();
-            accountNum = identifier + rndNumber;
-
+            string rndNumber = Random.Shared.Next(900000000, 1000000000).ToString();
+            string accountNum = identifier + rndNumber;
             if (!_context.Accounts.Any(a => a.AccountNumber == accountNum))
             {
                 return accountNum;
