@@ -7,91 +7,91 @@ namespace theunsafebank.Controllers;
 
 public class AuthController : Controller
 {
-    private readonly BankContext _context;
+	private readonly BankContext _context;
 
-    public AuthController(BankContext context)
-    {
-        _context = context;
-    }
+	public AuthController(BankContext context)
+	{
+		_context = context;
+	}
 
-    [HttpGet]
-    public IActionResult Login()
-    {
-        return View();
-    }
+	[HttpGet]
+	public IActionResult Login()
+	{
+		return View();
+	}
 
-    [HttpPost]
-    public IActionResult Login(string username, string password)
-    {
-        var customer = _context.Customers
-            .FirstOrDefault(c => c.Username == username && c.Password == password);
+	[HttpPost]
+	public IActionResult Login(string username, string password)
+	{
+		var customer = _context.Customers
+			.FirstOrDefault(c => c.Username == username && c.Password == password);
 
-        if (customer != null)
-        {
-            Response.Cookies.Append("CustomerId", customer.Id.ToString());
-            return RedirectToAction("Dashboard", "Account");
-        }
+		if (customer != null)
+		{
+			// Response.Cookies.Append("CustomerId", customer.Id.ToString());
+			return RedirectToAction("Dashboard", "Account");
+		}
 
-        ViewBag.Error = "Invalid username or password";
-        return View();
-    }
+		ViewBag.Error = "Invalid username or password";
+		return View();
+	}
 
-    [HttpGet]
-    public IActionResult Register()
-    {
-        return View();
-    }
+	[HttpGet]
+	public IActionResult Register()
+	{
+		return View();
+	}
 
-    [HttpPost]
-    public IActionResult Register(string username, string password, string fullName)
-    {
-        var existingCustomer = _context.Customers.FirstOrDefault(c => c.Username == username);
+	[HttpPost]
+	public IActionResult Register(string username, string password, string fullName)
+	{
+		var existingCustomer = _context.Customers.FirstOrDefault(c => c.Username == username);
 
-        if (existingCustomer != null)
-        {
-            ViewBag.Error = "Username already exists";
-            return View();
-        }
-        string numFirstHalf = "dK-JoNaS";
-        string numSecHalf = Random.Shared.Next(900000000, 1000000000).ToString();
+		if (existingCustomer != null)
+		{
+			ViewBag.Error = "Username already exists";
+			return View();
+		}
+		string numFirstHalf = "dK-JoNaS";
+		string numSecHalf = Random.Shared.Next(900000000, 1000000000).ToString();
 
-        string customerNumber = numFirstHalf + numSecHalf;
+		string customerNumber = numFirstHalf + numSecHalf;
 
-        var customer = new Customer
-        {
-            Username = username,
-            Password = password,
-            FullName = fullName,
-            CustomerNumber = customerNumber
-        };
+		var customer = new Customer
+		{
+			Username = username,
+			Password = password,
+			FullName = fullName,
+			CustomerNumber = customerNumber
+		};
 
-        _context.Customers.Add(customer);
-        _context.SaveChanges();
+		_context.Customers.Add(customer);
+		_context.SaveChanges();
 
-        var accountNumber = (1000 + customer.Id).ToString();
+		var accountNumber = (1000 + customer.Id).ToString();
 
-        var account = new Account
-        {
-            AccountNumber = accountNumber,
-            Balance = 10000m, // 10,000 SEK
-            CustomerId = customer.Id
-        };
+		var account = new Account
+		{
+			AccountNumber = accountNumber,
+			Balance = 10000m, // 10,000 SEK
+			CustomerId = customer.Id
+		};
 
-        if (customer.Id % 10 == 0)
-        {
-            account.Balance += 10000m;
-        }
+		if (customer.Id % 10 == 0)
+		{
+			account.Balance += 10000m;
+		}
 
-        _context.Accounts.Add(account);
-        _context.SaveChanges();
+		_context.Accounts.Add(account);
+		_context.SaveChanges();
 
-        Response.Cookies.Append("dkJoNaS", customer.CustomerNumber.ToString());
-        return RedirectToAction("Dashboard", "Account");
-    }
+		Response.Cookies.Append("dkJoNaS", customer.CustomerNumber.ToString());
+		return RedirectToAction("Dashboard", "Account");
+	}
 
-    public IActionResult Logout()
-    {
-        Response.Cookies.Delete("CustomerId");
-        return RedirectToAction("Login");
-    }
+	public IActionResult Logout()
+	{
+		Response.Cookies.Delete("CustomerId");
+		return RedirectToAction("Login");
+	}
 }

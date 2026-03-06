@@ -16,13 +16,14 @@ public class AccountController : Controller
 
 	public IActionResult Dashboard()
 	{
-		var customerId = GetCustomerIdFromCookie();
+		var customerNum = GetCustomerNumberFromCookie();
 
-		if (customerId == null)
+		if (customerNum == null)
 		{
 			return RedirectToAction("Login", "Auth");
 		}
 
+		// var customer = _context.Customers.Where(c => c.CustomerNumber == customerId)
 		// Get account with transfers
 		var account = _context.Accounts
 			.Include(a => a.Customer)
@@ -30,7 +31,7 @@ public class AccountController : Controller
 				.ThenInclude(t => t.ToAccount)
 			.Include(a => a.TransfersTo)
 				.ThenInclude(t => t.FromAccount)
-			.FirstOrDefault(a => a.CustomerId == customerId);
+			.FirstOrDefault(a => a.Customer.CustomerNumber == customerNum);
 
 		if (account == null)
 		{
@@ -43,7 +44,7 @@ public class AccountController : Controller
 	[HttpPost]
 	public IActionResult Transfer(string toAccountNumber, decimal amount, string receiverMessage, string senderNote)
 	{
-		var customerId = GetCustomerIdFromCookie();
+		var customerId = GetCustomerNumberFromCookie();
 
 		if (customerId == null)
 		{
@@ -51,7 +52,7 @@ public class AccountController : Controller
 		}
 
 		var fromAccount = _context.Accounts
-			.FirstOrDefault(a => a.CustomerId == customerId);
+			.FirstOrDefault(a => a.Customer.CustomerNumber == customerId);
 
 		if (fromAccount == null)
 		{
@@ -233,12 +234,12 @@ public class AccountController : Controller
 		return Json(new { success = true, name = account.Customer.FullName });
 	}
 
-	private int? GetCustomerIdFromCookie()
+	private string? GetCustomerNumberFromCookie()
 	{
-		if (Request.Cookies.TryGetValue("CustomerId", out var rawValue)
-			&& int.TryParse(rawValue, out var customerId))
+		if (Request.Cookies.TryGetValue("CustomerNum", out var rawValue))
+		// && int.TryParse(rawValue, out var customerId))
 		{
-			return customerId;
+			return rawValue;
 		}
 
 		return null;
