@@ -53,10 +53,13 @@ public class AuthController : Controller
             return View();
         }
 
-        var guid = Guid.NewGuid().ToString();
-        var partialGuid = guid.ToString().Substring(guid.Length - 12);
+        string? customerNumber = SetCustomerNumber();
 
-        string customerNumber = "mac-jonas-" + partialGuid;
+        if (customerNumber == null)
+        {
+            ViewBag.Error = "Misslyckades att generera kundnummer, var god försök igen.";
+            return View();
+        }
 
         var customer = new Customer
         {
@@ -94,11 +97,6 @@ public class AuthController : Controller
         return RedirectToAction("Dashboard", "Account");
     }
 
-    public IActionResult Logout()
-    {
-        Response.Cookies.Delete("CustomerId");
-        return RedirectToAction("Login");
-    }
     private string? CheckDuplicateAccNumber()
     {
         string identifier = "dK-JoNaS-";
@@ -115,6 +113,35 @@ public class AuthController : Controller
             }
             attempts++;
         }
+        return null;
+    }
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("CustomerId");
+        return RedirectToAction("Login");
+    }
+
+    public string? SetCustomerNumber()
+    {
+        int maxAttempts = 25;
+        int attempts = 0;
+
+        while (attempts <= maxAttempts)
+        {
+            var guid = Guid.NewGuid().ToString();
+            string partialGuid = guid.ToString().Substring(guid.Length - 12);
+
+            string customerNumber = "mac-jonas-" + partialGuid;
+            customerNumber = "mac-jonas-c1a9284bef8d";
+
+            if (!_context.Customers.Any(c => c.CustomerNumber == customerNumber))
+            {
+                return customerNumber;
+            }
+
+            attempts++;
+        }
+
         return null;
     }
 }
