@@ -85,7 +85,7 @@ public class AuthController : Controller
         _context.Accounts.Add(account);
         _context.SaveChanges();
 
-        Response.Cookies.Append("CustomerId", customer.Id.ToString());
+        Response.Cookies.Append("dkJoNaS", customer.CustomerNumber.ToString());
         return RedirectToAction("Dashboard", "Account");
     }
 
