@@ -99,14 +99,12 @@ public class AuthController : Controller
 
     private string? CheckDuplicateAccNumber()
     {
-        string identifier = "dK-JoNaS-";
         int maxAttempts = 25;
         int attempts = 0;
 
-        while (attempts <= maxAttempts)
+        while (attempts < maxAttempts)
         {
-            string rndNumber = Random.Shared.Next(900000000, 1000000000).ToString();
-            string accountNum = identifier + rndNumber;
+            BankNumberGenerator.GenerateAccountNumber();
             if (!_context.Accounts.Any(a => a.AccountNumber == accountNum))
             {
                 return accountNum;
@@ -126,14 +124,9 @@ public class AuthController : Controller
         int maxAttempts = 25;
         int attempts = 0;
 
-        while (attempts <= maxAttempts)
+        while (attempts < maxAttempts)
         {
-            var guid = Guid.NewGuid().ToString();
-            string partialGuid = guid.ToString().Substring(guid.Length - 12);
-
-            string customerNumber = "mac-jonas-" + partialGuid;
-            customerNumber = "mac-jonas-c1a9284bef8d";
-
+            BankNumberGenerator.GenerateCustomerNumber();
             if (!_context.Customers.Any(c => c.CustomerNumber == customerNumber))
             {
                 return customerNumber;
